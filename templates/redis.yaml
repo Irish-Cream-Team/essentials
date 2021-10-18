@@ -1,0 +1,38 @@
+{{ if .Values.essentials.redis.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.essentials.redis.name | default "redis" }}
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+    app: {{ .Values.essentials.redis.name | default "redis"}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.essentials.redis.name | default "redis"}}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.essentials.redis.name | default "redis"}}
+    spec:
+      containers:
+        - name: {{ .Values.essentials.redis.name | default "redis"}}
+          image: {{ .Values.essentials.redis.image | default "redis"}}
+          ports:
+            - containerPort: {{ .Values.essentials.redis.port | default "redis"}}
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.essentials.redis.name | default "redis"}}
+spec:
+  selector:
+    app: {{ .Values.essentials.redis.name | default "redis"}}
+  ports:
+    - protocol: TCP
+      name: http
+      port: {{ .Values.essentials.redis.port | default "redis"}}
+      targetPort: {{ .Values.essentials.redis.port | default "redis"}}
+{{ end }}

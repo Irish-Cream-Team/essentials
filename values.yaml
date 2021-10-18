@@ -1,0 +1,27 @@
+essentials:
+  rabbitmq:
+    enabled: "false"
+
+  redis:
+    enabled: "false"
+    name: redis
+    port: 6379
+
+  outspike:
+    enabled: "false"
+    port: "3000"
+    client_id:
+    client_secret:
+    outgoing_services:
+    public_key_full_path:
+    redis_host:
+    redis_key_prefix:
+    spike_url:
+    token_grant_type:
+    use_redis:
+
+  inspike:
+    enabled: "false"
+    port: "3000"
+    incoming_services: ""
+    public_key_full_path: ""
