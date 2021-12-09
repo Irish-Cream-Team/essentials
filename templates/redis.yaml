@@ -20,7 +20,7 @@ spec:
         - name: {{ .Values.essentials.redis.name | default "redis"}}
           image: {{ .Values.essentials.redis.image | default "redis"}}
           ports:
-            - containerPort: {{ .Values.essentials.redis.port | default "redis"}}
+            - containerPort: {{ .Values.essentials.redis.port | default "6379"}}
               name: http
 ---
 apiVersion: v1
