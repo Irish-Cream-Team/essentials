@@ -1,0 +1,38 @@
+{{ if .Values.essentials.mongo.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.essentials.mongo.name | default "mongo" }}
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+    app: {{ .Values.essentials.mongo.name | default "mongo"}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.essentials.mongo.name | default "mongo"}}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.essentials.mongo.name | default "mongo"}}
+    spec:
+      containers:
+        - name: {{ .Values.essentials.mongo.name | default "mongo"}}
+          image: {{ .Values.essentials.mongo.image | default "mongo"}}
+          ports:
+            - containerPort: {{ .Values.essentials.mongo.port | default "27017"}}
+              name: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.essentials.mongo.name | default "mongo"}}
+spec:
+  selector:
+    app: {{ .Values.essentials.mongo.name | default "mongo"}}
+  ports:
+    - protocol: TCP
+      name: mongo
+      port: {{ .Values.essentials.mongo.port | default "mongo"}}
+      targetPort: {{ .Values.essentials.mongo.port | default "27017"}}
+{{ end }}
