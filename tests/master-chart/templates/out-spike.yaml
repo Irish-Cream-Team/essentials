@@ -1,0 +1,68 @@
+---
+# Source: master-chart/templates/out-spike.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: outgoing-spike-proxy
+spec:
+  selector:
+    app: outgoing-spike-proxy
+  ports:
+    - protocol: TCP
+      name: http
+      port: 3000
+      targetPort: 3000
+---
+# Source: master-chart/templates/out-spike.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: outgoing-spike-proxy
+  labels:
+    helm.sh/chart: master-chart-0.1.1
+    app.kubernetes.io/name: master-chart
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+    app: outgoing-spike-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: outgoing-spike-proxy
+  template:
+    metadata:
+      labels:
+        app: outgoing-spike-proxy
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: outgoing-spike-proxy
+          image: registry.gitlab.com/yesodot/rnd/terminal-rabaz/shared/spike-proxy-service:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+          - name: MODE
+            value: "outgoing"
+          - name: PORT
+            value: "3000"
+          - name: SPIKE_CLIENT_ID
+            value: m6A8sOHe308l87xMAmQHP9zIb0toVBAouBpLJ~ux
+          - name: SPIKE_CLIENT_SECRET
+            value: 6KUmOaxicqSfPR_mMFBuZDNPHj~aggthleW~8xGKS3rt5k2Im_4qvSd_R0tEEtnQcOIXMZO6~YwOq3bbrp5iTxH75vEU7rA9UYHn
+          - name: OUTGOING_SERVICES
+            value: "[{\"route\":\"/kartoffel/*\",\"pathRewrite\":{\"^/kartoffel\":\"\"},\"target\":\"http://kartoffel-master.eastus.cloudapp.azure.com:3001\",\"audience\":\"kartoffel\"},{\"route\":\"/goldenpipe/*\",\"pathRewrite\":{\"^/goldenpipe\":\"\"},\"target\":\"http://gopi01.northeurope.cloudapp.azure.com\",\"audience\":\"Zv9iYmI7f_261ucOPZsEdftlF0wRTF\"}]"
+          - name: SPIKE_PUBLIC_KEY_FULL_PATH
+            value: /usr/src/app/certificate/publicKey.pem
+          - name: SPIKE_REDIS_HOST
+            value: redis://skynet-redis
+          - name: SPIKE_REDIS_KEY_PREFIX
+            value: test
+          - name: SPIKE_URL
+            value: https://ospike.northeurope.cloudapp.azure.com/oauth2/token
+          - name: TOKEN_GRANT_TYPE
+            value: skynet_outgoing_proxy_token
+          - name: USE_REDIS
+            value: 'true'

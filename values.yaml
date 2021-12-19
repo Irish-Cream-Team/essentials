@@ -1,32 +1,38 @@
 essentials:
   rabbitmq:
-    enabled: "false"
+    enabled: "true"
+    PullSecrets: [regcred]
+  
+  mongo:
+    replicaset: false
+    enabled: "true"
+    replicaset: true
+    PullSecrets: [regcred]
 
   redis:
-    enabled: "false"
+    enabled: "true"
     name: redis
     port: 6379
-
-  mongo:
-    enabled: "false"
-    name: mongo
-    port: 27017
+    PullSecrets: [regcred]
 
   outspike:
-    enabled: "false"
+    enabled: true
     port: "3000"
-    client_id:
-    client_secret:
-    outgoing_services:
-    public_key_full_path:
-    redis_host:
-    redis_key_prefix:
-    spike_url:
-    token_grant_type:
-    use_redis:
+    PullSecrets: [regcred]
+    client_id: m6A8sOHe308l87xMAmQHP9zIb0toVBAouBpLJ~ux
+    client_secret: 6KUmOaxicqSfPR_mMFBuZDNPHj~aggthleW~8xGKS3rt5k2Im_4qvSd_R0tEEtnQcOIXMZO6~YwOq3bbrp5iTxH75vEU7rA9UYHn
+    outgoing_services: '[{"route":"/kartoffel/*","pathRewrite":{"^/kartoffel":""},"target":"http://kartoffel-master.eastus.cloudapp.azure.com:3001","audience":"kartoffel"},{"route":"/goldenpipe/*","pathRewrite":{"^/goldenpipe":""},"target":"http://gopi01.northeurope.cloudapp.azure.com","audience":"Zv9iYmI7f_261ucOPZsEdftlF0wRTF"}]'
+    public_key_full_path: "/usr/src/app/certificate/publicKey.pem"
+    redis_host: redis://skynet-redis
+    redis_key_prefix: "test"
+    spike_url: https://ospike.northeurope.cloudapp.azure.com/oauth2/token
+    token_grant_type: skynet_outgoing_proxy_token
+    use_redis: "'true'"
 
   inspike:
-    enabled: "false"
+    enabled: true
+    MODE: incoming
+    PullSecrets: [regcred]
     port: "3000"
-    incoming_services: ""
-    public_key_full_path: ""
+    SPIKE_PUBLIC_KEY_FULL_PATH: "/usr/src/app/certificate/publicKey.pem"
+    INCOMING_SERVICES: '[{"target":"http://metadata-service:8000","audience":"rabaz_skynet","useBearerToken":true,"routes":[{"route":"/metadata/api/metadata/*","pathRewrite":{"^/metadata": ""},"method":"get","useAuthentication":true, "allowedScopes":["metadata"]}, {"route":"/metadata/api/metadata/","pathRewrite":{"^/metadata": ""},"method":"put","useAuthentication":true, "allowedScopes":["metadata"]}, {"route":"/metadata/docs/*","pathRewrite":{"^/metadata": ""},"method":"get","useAuthentication":false}]},{"target":"http://picture-proxy:8000","audience":"rabaz_skynet","useBearerToken":true,"routes":[{"route":"/picture/api/picture/*","pathRewrite":{"^/picture": ""},"method":"get","useAuthentication":true, "allowedScopes":["personal_info","admin"]}]}]'

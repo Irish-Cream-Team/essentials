@@ -16,6 +16,10 @@ spec:
       labels:
         app: {{ .Values.essentials.rabbitmq.name | default "rabbit" }}
     spec:
+      imagePullSecrets:
+      {{- range .Values.essentials.rabbitmq.PullSecrets }}
+        - name: {{ . }}
+      {{- end }}
       containers:
         - name: {{ .Values.essentials.rabbitmq.name | default "rabbit" }}
           image: {{ .Values.essentials.rabbitmq.name | default "rabbitmq:3-management" }}

@@ -1,3 +1,4 @@
+{{- $replicaset := default false .Values.essentials.mongo.replicaset -}}
 {{ if .Values.essentials.mongo.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -16,9 +17,26 @@ spec:
       labels:
         app: {{ .Values.essentials.mongo.name | default "mongo"}}
     spec:
+      imagePullSecrets:
+      {{- range .Values.essentials.mongo.PullSecrets }}
+        - name: {{ . }}
+      {{- end }}
       containers:
         - name: {{ .Values.essentials.mongo.name | default "mongo"}}
+          {{- if $replicaset }}
+          image: "harborreg-2.northeurope.cloudapp.azure.com/library/mongo:replicaSet"
+          lifecycle:
+            postStart:
+              exec:
+                command: 
+                  - "sh"
+                  - "-c"
+                  - >
+                    echo 'rs.initiate({ _id: "rs0", version: 1, members: [ { _id: 0, host: "127.0.0.1:27017"}]})' > rs-init.js
+                    mongo < rs-init.js
+          {{- else }}
           image: {{ .Values.essentials.mongo.image | default "mongo"}}
+          {{- end }}
           ports:
             - containerPort: {{ .Values.essentials.mongo.port | default "27017"}}
               name: mongo
@@ -33,6 +51,6 @@ spec:
   ports:
     - protocol: TCP
       name: mongo
-      port: {{ .Values.essentials.mongo.port | default "mongo"}}
-      targetPort: {{ .Values.essentials.mongo.port | default "27017"}}
+      port: {{ .Values.essentials.mongo.port | default 27017 }}
+      targetPort: {{ .Values.essentials.mongo.port | default 27017}}
 {{ end }}

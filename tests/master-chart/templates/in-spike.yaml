@@ -1,0 +1,54 @@
+---
+# Source: master-chart/templates/in-spike.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: incoming-spike-proxy
+spec:
+  selector:
+    app: incoming-spike-proxy
+  ports:
+    - protocol: TCP
+      name: http
+      port: 3000
+      targetPort: 3000
+---
+# Source: master-chart/templates/in-spike.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: incoming-spike-proxy
+  labels:
+    helm.sh/chart: master-chart-0.1.1
+    app.kubernetes.io/name: master-chart
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+    app: incoming-spike-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: incoming-spike-proxy
+  template:
+    metadata:
+      labels:
+        app: incoming-spike-proxy
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: incoming-spike-proxy
+          image: registry.gitlab.com/yesodot/rnd/terminal-rabaz/shared/spike-proxy-service:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+          - name: MODE
+            value: "incoming"
+          - name: PORT
+            value: "3000"
+          - name: INCOMING_SERVICES
+            value: 
+          - name: SPIKE_PUBLIC_KEY_FULL_PATH
+            value:

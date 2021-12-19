@@ -16,6 +16,10 @@ spec:
       labels:
         app: {{ .Values.essentials.inspike.name | default "incoming-spike-proxy"}}
     spec:
+      imagePullSecrets:
+      {{- range .Values.essentials.inspike.PullSecrets }}
+        - name: {{ . }}
+      {{- end }}
       containers:
         - name: {{ .Values.essentials.inspike.name | default "incoming-spike-proxy"}}
           image: {{ .Values.essentials.inspike.image | default "registry.gitlab.com/yesodot/rnd/terminal-rabaz/shared/spike-proxy-service:latest"}}
@@ -28,7 +32,7 @@ spec:
           - name: PORT
             value: {{ .Values.essentials.inspike.port | quote }}
           - name: INCOMING_SERVICES
-            value: {{ .Values.essentials.inspike.incoming_services }}
+            value: {{ .Values.essentials.inspike.incoming_services | quote }}
           - name: SPIKE_PUBLIC_KEY_FULL_PATH
             value: {{ .Values.essentials.inspike.public_key_full_path }}
 ---
