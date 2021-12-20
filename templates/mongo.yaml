@@ -1,5 +1,5 @@
 {{- $replicaset := default false .Values.essentials.mongo.replicaset -}}
-{{ if .Values.essentials.mongo.enabled }}
+{{- if .Values.essentials.mongo.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,4 +53,4 @@ spec:
       name: mongo
       port: {{ .Values.essentials.mongo.port | default 27017 }}
       targetPort: {{ .Values.essentials.mongo.port | default 27017}}
-{{ end }}
+{{- end -}}

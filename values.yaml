@@ -1,22 +1,23 @@
 essentials:
   rabbitmq:
-    enabled: "false"
+    enabled: false
     PullSecrets: []
 
   redis:
-    enabled: "false"
+    enabled: false
     name: redis
     port: 6379
     PullSecrets: []
 
   mongo:
-    enabled: "false"
+    replicaset: false
+    enabled: false
     name: mongo
     port: 27017
     PullSecrets: []
 
   outspike:
-    enabled: "false"
+    enabled: false
     port: "3000"
     PullSecrets: []
     client_id:
@@ -30,7 +31,7 @@ essentials:
     use_redis:
 
   inspike:
-    enabled: "false"
+    enabled: false
     port: "3000"
     PullSecrets: []
     incoming_services: ""

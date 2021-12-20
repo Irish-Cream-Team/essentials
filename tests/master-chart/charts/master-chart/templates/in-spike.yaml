@@ -1,5 +1,5 @@
 ---
-# Source: master-chart/templates/in-spike.yaml
+# Source: master-chart/charts/master-chart/templates/in-spike.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,7 +13,7 @@ spec:
       port: 3000
       targetPort: 3000
 ---
-# Source: master-chart/templates/in-spike.yaml
+# Source: master-chart/charts/master-chart/templates/in-spike.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:

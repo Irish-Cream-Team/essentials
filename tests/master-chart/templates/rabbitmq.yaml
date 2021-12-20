@@ -24,7 +24,7 @@ kind: Deployment
 metadata:
   name: rabbit
   labels:
-    helm.sh/chart: master-chart-0.1.1
+    helm.sh/chart: master-chart-0.1.3
     app.kubernetes.io/name: master-chart
     app.kubernetes.io/instance: RELEASE-NAME
     app.kubernetes.io/version: "1.16.0"
@@ -41,7 +41,6 @@ spec:
         app: rabbit
     spec:
       imagePullSecrets:
-        - name: regcred
       containers:
         - name: rabbit
           image: rabbitmq:3-management
