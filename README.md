@@ -12,6 +12,8 @@ The chart currently includes
 
 ## Mongo
 
+> **essentials.mongo.enabled(boolean, false):** change to true if mongo is needed.
+>
 > **essentials.mongo.name(string, mongo):** name of mongo instance, applies to service and deployment.
 >
 > **essentials.mongo.PullSecrets(array):** an array of pull secrets for the deployment.
@@ -24,6 +26,8 @@ The chart currently includes
 
 ## Redis
 
+> **essentials.redis.enabled(boolean, false):** change to true if redis is needed.
+>
 > **essentials.redis.name(string, redis):** name of redis instance, applies to service and deployment.
 >
 > **essentials.redis.PullSecrets(array):** an array of pull secrets for the deployment.
@@ -34,6 +38,8 @@ The chart currently includes
 
 ## rabbit
 
+> **essentials.rabbitmq.enabled(boolean, false):** change to true if rabbitmq is needed.
+>
 > **essentials.rabbitmq.name(string, rabbit):** name of rabbit instance, applies to service and deployment.
 >
 > **essentials.rabbitmq.PullSecrets(array):** an array of pull secrets for the deployment.
@@ -44,6 +50,8 @@ The chart currently includes
 
 ## incomig-spike-proxy
 
+> **essentials.inspike.enabled(boolean, false):** change to true if inspike is needed.
+>
 > **essentials.inspike.name(string, incoming-spike-proxy):** name of inspike instance, applies to service and deployment.
 >
 > **essentials.inspike.PullSecrets(array):** an array of pull secrets for the deployment.
@@ -58,6 +66,8 @@ The chart currently includes
 
 ## outgoing-spike-proxy
 
+> **essentials.outspike.enabled(boolean, false):** change to true if outspike is needed.
+>
 > **essentials.outspike.name(string, outgoing-spike-proxy):** name of outspike instance, applies to service and deployment.
 >
 > **essentials.outspike.PullSecrets(array):** an array of pull secrets for the deployment.
