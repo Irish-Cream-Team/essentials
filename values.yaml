@@ -36,3 +36,18 @@ essentials:
     PullSecrets: []
     incoming_services: ""
     public_key_full_path: ""
+  
+  minio:
+    enabled: false
+    name: minio
+    port: 9000
+    UIPort: 9001
+    rootUser: "admin"
+    rootPassword: "yesodot12345"
+    
+    ingress:
+      enabled: false
+      path: "/"
+      hosts:
+        - minio.branch-yesodot.org  
+   
