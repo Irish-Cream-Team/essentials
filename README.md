@@ -9,6 +9,7 @@ The chart currently includes
 3. rabbit
 4. incoming spike proxy
 5. outgoing spike proxy
+6. minio
 
 ## Mongo
 
@@ -89,7 +90,23 @@ The chart currently includes
 > **essentials.outspike.redis_key_prefix(string):** setting the SPIKE_REDIS_KEY_PREFIX env var for spike
 >
 > **essentials.outspike.spike_url(quoted JSON):** setting the SPIKE_URL env var for spike
+
+> ## minio
+
+> **essentials.minio.enabled(boolean, false):** change to true if minio is needed.
 >
-> **essentials.outspike.public_key_full_path(string):** setting the TOKEN_GRANT_TYPE env var for spike
+> **essentials.minio.name(string, minio):** name of minio instance, applies to service deployment and ingress if enabled.
 >
-> **essentials.outspike.use_redis(string):** setting the USE_REDIS env var for spike
+> **essentials.minio.port(int, 9000):** port for minio to use
+> 
+> **essentials.minio.UIport(int, 9001):** port for UI minio 
+> 
+> **essentials.minio.rootUser(int, admin):** root user to connect minio UI 
+>
+> **essentials.minio.rootPassword(string, yesodot12345):** root password to connect minio UI 
+> 
+> **essentials.minio.ingress.enabled(boolean, false):** change to true if ingress is needed.
+> 
+> **essentials.minio.ingress.path(string, /):** path for ingress to rout.
+> 
+> **essentials.minio.ingress.hosts(string, minio.branch-yesodot.org):** the host name of minio ingress.
