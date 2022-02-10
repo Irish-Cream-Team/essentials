@@ -32,8 +32,11 @@ spec:
                   - "sh"
                   - "-c"
                   - >
-                    echo 'rs.initiate({ _id: "rs0", version: 1, members: [ { _id: 0, host: "127.0.0.1:27017"}]})' > rs-init.js
-                    mongo < rs-init.js
+                    while [ "$(grep -v "rem_address" /proc/net/tcp | grep 6989)" = "" ];
+                    do
+                      echo "wating for monog to listen on port 27017"
+                    done;
+                    mongo --host 127.0.0.1 --port 27017 --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "127.0.0.1:27017"}]})';
           {{- else }}
           image: {{ .Values.essentials.mongo.image | default "mongo"}}
           {{- end }}
