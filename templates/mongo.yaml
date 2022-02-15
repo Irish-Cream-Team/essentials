@@ -36,7 +36,7 @@ spec:
                     do
                       echo "wating for monog to listen on port 27017"
                     done;
-                    mongo --host 127.0.0.1 --port 27017 --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "127.0.0.1:27017"}]})';
+                    mongo --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})';
           {{- else }}
           image: {{ .Values.essentials.mongo.image | default "mongo"}}
           {{- end }}
