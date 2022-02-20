@@ -12,9 +12,9 @@ essentials:
   mongo:
     replicaset: true
     enabled: true
-    name: mongo
+    name: mongodb
     port: 27017
-   
+    PullSecrets: []
 
   outspike:
     enabled: false
