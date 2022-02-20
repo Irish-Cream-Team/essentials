@@ -34,7 +34,7 @@ essentials:
     enabled: false
     port: "3000"
     PullSecrets: []
-    incoming_services: ""
+    incoming_services: "fdf"
     public_key_full_path: ""
   
   minio:
