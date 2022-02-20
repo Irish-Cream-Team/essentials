@@ -1,0 +1,53 @@
+essentials:
+  rabbitmq:
+    enabled: false
+    PullSecrets: []
+
+  redis:
+    enabled: false
+    name: redis
+    port: 6379
+    PullSecrets: []
+
+  mongo:
+    replicaset: true
+    enabled: true
+    name: mongo
+    port: 27017
+    PullSecrets: []
+
+  outspike:
+    enabled: false
+    port: "3000"
+    PullSecrets: []
+    client_id:
+    client_secret:
+    outgoing_services:
+    public_key_full_path:
+    redis_host:
+    redis_key_prefix:
+    spike_url:
+    token_grant_type:
+    use_redis:
+
+  inspike:
+    enabled: false
+    port: "3000"
+    PullSecrets: []
+    incoming_services: ""
+    public_key_full_path: ""
+  
+  minio:
+    enabled: false
+    name: minio
+    port: 9000
+    UIPort: 9001
+    rootUser: "admin"
+    rootPassword: "yesodot12345"
+    
+    ingress:
+      enabled: false
+      path: "/"
+      hosts:
+        - minio.branch-yesodot.org  
+   
