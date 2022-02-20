@@ -22,7 +22,7 @@ essentials:
     PullSecrets: []
     client_id:
     client_secret:
-    outgoing_services: "sss"
+    outgoing_services: ""
     public_key_full_path:
     redis_host:
     redis_key_prefix:

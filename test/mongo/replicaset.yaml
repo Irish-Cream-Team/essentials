@@ -14,7 +14,7 @@ essentials:
     enabled: true
     name: mongo
     port: 27017
-    PullSecrets: []
+   
 
   outspike:
     enabled: false
