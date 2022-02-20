@@ -1,0 +1,58 @@
+---
+# Source: master-chart/templates/minio.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+spec:
+  selector:
+    app: minio
+  ports:
+    - name: http
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
+    - name: api
+      port: 9001
+      protocol: TCP
+      targetPort: 9001
+---
+# Source: master-chart/templates/minio.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  labels:
+    helm.sh/chart: master-chart-0.2.3
+    app.kubernetes.io/name: master-chart
+    app.kubernetes.io/instance: essentials
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+    app: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: "quay.io/minio/minio:latest"
+          command:
+            - "/bin/sh"
+            - "-ce"
+            - "/usr/bin/docker-entrypoint.sh minio server /data --address :9000 --console-address :9001 "
+          ports:
+            - name: minio
+              containerPort: 9000
+            - name: minio-console
+              containerPort: 9001
+          env:
+            - name: MINIO_ROOT_USER
+              value: admin
+            - name: MINIO_ROOT_PASSWORD
+              value: yesodot12345

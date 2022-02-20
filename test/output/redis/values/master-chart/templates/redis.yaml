@@ -1,0 +1,44 @@
+---
+# Source: master-chart/templates/redis.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      name: http
+      port: 6379
+      targetPort: 6379
+---
+# Source: master-chart/templates/redis.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    helm.sh/chart: master-chart-0.2.3
+    app.kubernetes.io/name: master-chart
+    app.kubernetes.io/instance: essentials
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      imagePullSecrets:
+      containers:
+        - name: redis
+          image: redis
+          ports:
+            - containerPort: 6379
+              name: http
