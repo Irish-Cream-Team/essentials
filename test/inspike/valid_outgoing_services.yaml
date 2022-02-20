@@ -1,28 +1,28 @@
 essentials:
   rabbitmq:
-    enabled: true
+    enabled: false
     PullSecrets: []
 
   redis:
-    enabled: true
+    enabled: false
     name: redis
     port: 6379
     PullSecrets: []
 
   mongo:
-    replicaset: true
-    enabled: true
+    replicaset: false
+    enabled: false
     name: mongo
     port: 27017
     PullSecrets: []
 
   outspike:
-    enabled: true
+    enabled: false
     port: "3000"
     PullSecrets: []
     client_id:
     client_secret:
-    outgoing_services:
+    outgoing_services: ""
     public_key_full_path:
     redis_host:
     redis_key_prefix:
@@ -34,11 +34,11 @@ essentials:
     enabled: true
     port: "3000"
     PullSecrets: []
-    incoming_services: ""
+    incoming_services: "[Ford,BMW,Fiat]"
     public_key_full_path: ""
   
   minio:
-    enabled: true
+    enabled: false
     name: minio
     port: 9000
     UIPort: 9001
