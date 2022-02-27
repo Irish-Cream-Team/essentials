@@ -34,7 +34,7 @@ data:
     
     ATTEMPTS=0 ; LIMIT=29
 
-    mc config host add test-minio http://minioo:9000 admin yesodot12345 ;
+    mc config host add test-minio http://{{ .Values.essentials.minio.name | default "minio" }}:{{ .Values.essentials.minio.port | default "9000"}} {{ .Values.essentials.minio.rootUser}} {{ .Values.essentials.minio.rootPassword}} ;
     mc admin info test-minio;
 
     STATUS=$?
@@ -48,7 +48,7 @@ data:
       fi ;
       sleep 2 ; # 1 second intervals between attempts
       
-      mc config host add test-minio http://minio:9000 admin yesodot12345 ;
+      mc config host add test-minio http://{{ .Values.essentials.minio.name | default "minio" }}:{{ .Values.essentials.minio.port | default "9000"}} {{ .Values.essentials.minio.rootUser}} {{ .Values.essentials.minio.rootPassword}} ;
       mc admin info test-minio;
 
       STATUS=$? ;
