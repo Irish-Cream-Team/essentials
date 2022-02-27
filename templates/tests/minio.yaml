@@ -1,8 +1,8 @@
-{{- if .Values.essentials.outspike.enabled -}}
+{{- if .Values.essentials.minio.enabled -}}
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ .Values.essentials.minio.name | default "minio" }}-test
+  name:  {{ .Values.essentials.minio.name | default "minio" }}-test
   labels:
     {{- include "master-chart.labels" . | nindent 4 }}
     app: {{ .Values.essentials.minio.name | default "minio" }}
@@ -10,32 +10,50 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: {{ .Values.essentials.minio.name | default "minio" }}-test
-      image: "quay.io/minio/minio:latest"
-      command:
-        - "/bin/sh"
-        - "-ce"
-        - "/usr/bin/docker-entrypoint.sh minio server /data --address :{{ .Values.essentials.minio.port }} --console-address :{{ .Values.essentials.minio.UIPort }} "
-      ports:
-        - name: minio
-          containerPort: {{ .Values.essentials.minio.port | default "9000"}}
-        - name: minio-console
-          containerPort: {{ .Values.essentials.minio.UIPort | default "9001"}}
-      env:
-      - name: MINIO_ROOT_USER
-        value: {{ .Values.essentials.minio.rootUser}}
-      - name: MINIO_ROOT_PASSWORD
-        value: {{ .Values.essentials.minio.rootPassword}}
+  - name: {{ .Values.essentials.minio.name | default "minio" }}-test
+    image: "quay.io/minio/mc:latest"
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/sh" , "/test/test-minio.sh"]
+    volumeMounts:
+      - name: test-minio
+        mountPath: "/test"
+  volumes:
+    - name: test-minio
+      configMap:
+        name: test-minio
+        defaultMode: 0745
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-minio
+data:
+  test-minio.sh: |
+    #!/bin/sh
     
-    - name: "minio-mc"
-      image: "quay.io/minio/mc:latest"
-      env:
-      - name: MINIO_ENDPOINT
-        value: "minio"
-      - name: MINIO_PORT
-        value: "9000"
-      command:
-        - "/bin/sh"
-        - "-ce"
-        - "minio/mc"
+    ATTEMPTS=0 ; LIMIT=29
+
+    mc config host add test-minio http://minioo:9000 admin yesodot12345 ;
+    mc admin info test-minio;
+
+    STATUS=$?
+    echo  $STATUS
+    until [ $STATUS = 0 ]
+    do
+      ATTEMPTS=`expr $ATTEMPTS + 1` ;
+      echo \"Failed attempts: $ATTEMPTS\" ;
+      if [ $ATTEMPTS -gt $LIMIT ]; then
+        exit 1 ;
+      fi ;
+      sleep 2 ; # 1 second intervals between attempts
+      
+      mc config host add test-minio http://minio:9000 admin yesodot12345 ;
+      mc admin info test-minio;
+
+      STATUS=$? ;
+    done ;
+    set -e ; # reset `e` as active
+    
+    
 {{- end }}
