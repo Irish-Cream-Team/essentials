@@ -33,6 +33,7 @@ spec:
               value: {{ .Values.essentials.minio.rootUser}}
             - name: MINIO_ROOT_PASSWORD
               value: {{ .Values.essentials.minio.rootPassword}}
+          
       
         
 ---

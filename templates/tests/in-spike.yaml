@@ -1,0 +1,32 @@
+{{ if .Values.essentials.inspike.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Values.essentials.inspike.name | default "incoming-spike-proxy" }}
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+    app: {{ .Values.essentials.inspike.name | default "incoming-spike-proxy"}}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  imagePullSecrets:
+  {{- range .Values.essentials.inspike.PullSecrets }}
+    - name: {{ . }}
+  {{- end }}
+  containers:
+    - name: {{ .Values.essentials.inspike.name | default "incoming-spike-proxy"}}
+      image: {{ .Values.essentials.inspike.image | default "registry.gitlab.com/yesodot/rnd/terminal-rabaz/shared/spike-proxy-service:latest"}}
+      ports:
+        - containerPort: {{ .Values.essentials.inspike.port | default "3000"}}
+          name: http
+      env:
+      - name: MODE
+        value: "incoming"
+      - name: PORT
+        value: {{ .Values.essentials.inspike.port | quote }}
+      - name: INCOMING_SERVICES
+        value: {{ .Values.essentials.inspike.incoming_services | quote }}
+      - name: SPIKE_PUBLIC_KEY_FULL_PATH
+        value: {{ .Values.essentials.inspike.public_key_full_path }}
+
+{{ end }}

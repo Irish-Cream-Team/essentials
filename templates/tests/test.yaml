@@ -1,0 +1,32 @@
+# {{- if .Values.essentials.minio.enabled }}
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: {{ .Values.essentials.minio.name | default "minio" }}-custom-command-job
+#   labels:
+#     app: {{ .Values.essentials.minio.name | default "minio" }}-custom-command-job
+#   annotations:
+#     "helm.sh/hook": post-install,post-upgrade
+#     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+#   template:
+#     metadata:
+#       labels:
+#         app: {{ .Values.essentials.minio.name | default "minio" }}-job
+#         release: {{ .Release.Name }}
+#     spec:
+#       restartPolicy: OnFailure
+
+#       containers:
+#       - name: minio-mc
+#         image: "quay.io/minio/mc:RELEASE.2021-12-29T06-52-55Z"
+#         imagePullPolicy: IfNotPresent
+#         command: ["/bin/sh", "/config/custom-command"]
+#         env:
+#           - name: MINIO_ENDPOINT
+#             value: {{ .Values.essentials.minio.name | default "minio" }}
+#           - name: MINIO_PORT
+#             value: {{ .Values.essentials.minio.port | default "9000"}}
+#         volumeMounts:
+#           - name: minio-configuration
+#             mountPath: /config
+# {{- end }}

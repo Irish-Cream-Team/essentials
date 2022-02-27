@@ -22,7 +22,7 @@ essentials:
     PullSecrets: []
     client_id:
     client_secret:
-    outgoing_services: ""
+    outgoing_services: 
     public_key_full_path:
     redis_host:
     redis_key_prefix:
@@ -34,7 +34,7 @@ essentials:
     enabled: true
     port: "3000"
     PullSecrets: []
-    incoming_services: "[Ford,BMW,Fiat]"
+    incoming_services: ""
     public_key_full_path: ""
   
   minio:

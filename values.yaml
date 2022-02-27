@@ -1,10 +1,10 @@
 essentials:
   rabbitmq:
-    enabled: true
+    enabled: false
     PullSecrets: []
 
   redis:
-    enabled: true
+    enabled: false
     name: redis
     port: 6379
     PullSecrets: []
@@ -17,7 +17,7 @@ essentials:
     PullSecrets: []
 
   outspike:
-    enabled: true
+    enabled: false
     port: "3000"
     PullSecrets: []
     client_id:
@@ -31,7 +31,7 @@ essentials:
     use_redis:
 
   inspike:
-    enabled: true
+    enabled: false
     port: "3000"
     PullSecrets: []
     incoming_services: ""
