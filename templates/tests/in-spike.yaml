@@ -28,5 +28,5 @@ spec:
         value: {{ .Values.essentials.inspike.incoming_services | quote }}
       - name: SPIKE_PUBLIC_KEY_FULL_PATH
         value: {{ .Values.essentials.inspike.public_key_full_path }}
-
+  restartPolicy: Never
 {{ end }}

@@ -42,4 +42,5 @@ spec:
         value: {{ .Values.essentials.outspike.token_grant_type }}
       - name: USE_REDIS
         value: {{ .Values.essentials.outspike.use_redis }}
+  restartPolicy: Never
 {{ end }}

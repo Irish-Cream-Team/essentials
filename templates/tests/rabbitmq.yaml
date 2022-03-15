@@ -1,6 +1,6 @@
 {{ if .Values.essentials.rabbitmq.enabled }}
 apiVersion: v1
-kind: Deployment
+kind: Pod
 metadata:
   name: {{ .Values.essentials.rabbitmq.name | default "rabbit" }}
   labels:

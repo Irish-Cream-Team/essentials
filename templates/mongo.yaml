@@ -25,24 +25,25 @@ spec:
         - name: {{ .Values.essentials.mongo.name | default "mongo"}}
           {{- if $replicaset }}
           image: "harborreg-2.northeurope.cloudapp.azure.com/library/mongo:replicaSet"
+          # command: ["/bin/sh" , "/test/test-mongo.sh"]
+          volumeMounts:
+            - name: test-mongo
+              mountPath: "/test"
           lifecycle:
             postStart:
               exec:
-                command: 
-                  - "sh"
-                  - "-c"
-                  - >
-                    while [ "$(grep -v "rem_address" /proc/net/tcp | grep 6989)" = "" ];
-                    do
-                      echo "wating for monog to listen on port 27017"
-                    done;
-                    mongo --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})';
+                command: ["/test/test-mongo.sh"]
           {{- else }}
           image: {{ .Values.essentials.mongo.image | default "mongo"}}
           {{- end }}
           ports:
             - containerPort: {{ .Values.essentials.mongo.port | default "27017"}}
               name: {{ .Values.essentials.mongo.name | default "mongo"}}
+      volumes:
+      - name: test-mongo
+        configMap:
+          name: test-mongo
+          defaultMode: 0745
 ---
 apiVersion: v1
 kind: Service
@@ -56,4 +57,27 @@ spec:
       name: mongo
       port: {{ .Values.essentials.mongo.port | default 27017 }}
       targetPort: {{ .Values.essentials.mongo.port | default 27017}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-mongo
+data:
+  test-mongo.sh: |
+    #!/bin/sh
+    
+    # while [ "$(grep -v "rem_address" /proc/net/tcp | grep 6989)" = "" ];
+    # do
+    #   echo "wating for monog to listen on port 27017"
+    # done;
+    sleep 3
+    # curl 127.0.0.1:27017 2&>1;
+    mongo --host localhost --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host:"localhost:27017"}]})';
+    touch test-see-if-works;
+    sleep 3
+    mongo --port 27017 --host localhost --eval 'cfg =rs.conf(); cfg.members[0].host = "mongo:27017"; rs.reconfig(cfg);';
+#     mongod --port 37017 --replSet rs0 --bind_ip localhost
+#     db.adminCommand( { createRole: "systemreplsetRole",privileges: [{ resource: { db: "local", collection: "system.replset" }, actions: ["find","update"] }],roles: []} );
+# db.createUser( { user: "myUserAdmins", pwd: "mimi1990", roles: [ { role: "userAdminAnyDatabase", db: "admin" }]  })
+   
 {{- end -}}

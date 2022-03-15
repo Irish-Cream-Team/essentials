@@ -1,6 +1,6 @@
 {{ if .Values.essentials.redis.enabled }}
 apiVersion: v1
-kind: Deployment
+kind: Pod
 metadata:
   name: {{ .Values.essentials.redis.name | default "redis" }}
   labels:
