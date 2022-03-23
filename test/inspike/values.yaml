@@ -10,8 +10,8 @@ essentials:
     PullSecrets: []
 
   mongo:
-    enabled: true
     replicaset: false
+    enabled: false
     name: mongo
     port: 27017
     PullSecrets: []
@@ -31,7 +31,7 @@ essentials:
     use_redis:
 
   inspike:
-    enabled: false
+    enabled: true
     port: "3000"
     PullSecrets: []
     incoming_services: ""

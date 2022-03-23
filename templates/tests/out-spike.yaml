@@ -1,0 +1,46 @@
+{{ if .Values.essentials.outspike.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Values.essentials.outspike.name | default "outgoing-spike-proxy" }}-test
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+    app: {{ .Values.essentials.outspike.name | default "outgoing-spike-proxy"}}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  imagePullSecrets:
+  {{- range .Values.essentials.outspike.PullSecrets }}
+    - name: {{ . }}
+  {{- end }}
+  containers:
+    - name: {{ .Values.essentials.outspike.name | default "outgoing-spike-proxy"}}-test
+      image: {{ .Values.essentials.outspike.image | default "registry.gitlab.com/yesodot/rnd/terminal-rabaz/shared/spike-proxy-service:latest"}}
+      ports:
+        - containerPort: {{ .Values.essentials.outspike.port | default "3000"}}
+          name: http
+      env:
+      - name: MODE
+        value: "outgoing"
+      - name: PORT
+        value: {{ .Values.essentials.outspike.port | quote }}
+      - name: SPIKE_CLIENT_ID
+        value: {{ .Values.essentials.outspike.client_id }}
+      - name: SPIKE_CLIENT_SECRET
+        value: {{ .Values.essentials.outspike.client_secret }}
+      - name: OUTGOING_SERVICES
+        value: {{ .Values.essentials.outspike.outgoing_services | quote }}
+      - name: SPIKE_PUBLIC_KEY_FULL_PATH
+        value: {{ .Values.essentials.outspike.public_key_full_path }}
+      - name: SPIKE_REDIS_HOST
+        value: {{ .Values.essentials.outspike.redis_host }}
+      - name: SPIKE_REDIS_KEY_PREFIX
+        value: {{ .Values.essentials.outspike.redis_key_prefix }}
+      - name: SPIKE_URL
+        value: {{ .Values.essentials.outspike.spike_url }}
+      - name: TOKEN_GRANT_TYPE
+        value: {{ .Values.essentials.outspike.token_grant_type }}
+      - name: USE_REDIS
+        value: {{ .Values.essentials.outspike.use_redis }}
+  restartPolicy: Never
+{{ end }}

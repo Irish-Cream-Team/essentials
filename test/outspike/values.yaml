@@ -10,19 +10,19 @@ essentials:
     PullSecrets: []
 
   mongo:
-    enabled: true
     replicaset: false
+    enabled: false
     name: mongo
     port: 27017
     PullSecrets: []
 
   outspike:
-    enabled: false
+    enabled: true
     port: "3000"
     PullSecrets: []
     client_id:
     client_secret:
-    outgoing_services:
+    outgoing_services: ""
     public_key_full_path:
     redis_host:
     redis_key_prefix:

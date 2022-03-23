@@ -10,8 +10,8 @@ essentials:
     PullSecrets: []
 
   mongo:
+    replicaset: true
     enabled: true
-    replicaset: false
     name: mongo
     port: 27017
     PullSecrets: []

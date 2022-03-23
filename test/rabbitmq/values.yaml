@@ -1,6 +1,6 @@
 essentials:
   rabbitmq:
-    enabled: false
+    enabled: true
     PullSecrets: []
 
   redis:
@@ -10,8 +10,8 @@ essentials:
     PullSecrets: []
 
   mongo:
-    enabled: true
     replicaset: false
+    enabled: false
     name: mongo
     port: 27017
     PullSecrets: []

@@ -30,7 +30,12 @@ spec:
           {{- end }}
           ports:
             - containerPort: {{ .Values.essentials.mongo.port | default "27017"}}
-              name: mongo
+              name: {{ .Values.essentials.mongo.name | default "mongo"}}
+      volumes:
+      - name: test-mongo
+        configMap:
+          name: test-mongo
+          defaultMode: 0745
 ---
 apiVersion: v1
 kind: Service
@@ -44,7 +49,6 @@ spec:
       name: mongo
       port: {{ .Values.essentials.mongo.port | default 27017 }}
       targetPort: {{ .Values.essentials.mongo.port | default 27017}}
-
 ---
 {{- if $replicaset }}
 apiVersion: v1

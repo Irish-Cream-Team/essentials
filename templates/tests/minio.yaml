@@ -1,0 +1,59 @@
+{{- if .Values.essentials.minio.enabled -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  {{ .Values.essentials.minio.name | default "minio" }}-test
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+    app: {{ .Values.essentials.minio.name | default "minio" }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+  - name: {{ .Values.essentials.minio.name | default "minio" }}-test
+    image: "quay.io/minio/mc:latest"
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/sh" , "/test/test-minio.sh"]
+    volumeMounts:
+      - name: test-minio
+        mountPath: "/test"
+  volumes:
+    - name: test-minio
+      configMap:
+        name: test-minio
+        defaultMode: 0745
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-minio
+data:
+  test-minio.sh: |
+    #!/bin/sh
+    
+    ATTEMPTS=0 ; LIMIT=29
+
+    mc config host add test-minio http://{{ .Values.essentials.minio.name | default "minio" }}:{{ .Values.essentials.minio.port | default "9000"}} {{ .Values.essentials.minio.rootUser}} {{ .Values.essentials.minio.rootPassword}} ;
+    mc admin info test-minio;
+
+    STATUS=$?
+    echo  $STATUS
+    until [ $STATUS = 0 ]
+    do
+      ATTEMPTS=`expr $ATTEMPTS + 1` ;
+      echo \"Failed attempts: $ATTEMPTS\" ;
+      if [ $ATTEMPTS -gt $LIMIT ]; then
+        exit 1 ;
+      fi ;
+      sleep 2 ; # 1 second intervals between attempts
+      
+      mc config host add test-minio http://{{ .Values.essentials.minio.name | default "minio" }}:{{ .Values.essentials.minio.port | default "9000"}} {{ .Values.essentials.minio.rootUser}} {{ .Values.essentials.minio.rootPassword}} ;
+      mc admin info test-minio;
+
+      STATUS=$? ;
+    done ;
+    set -e ; # reset `e` as active
+    
+    
+{{- end }}

@@ -10,8 +10,8 @@ essentials:
     PullSecrets: []
 
   mongo:
-    enabled: true
     replicaset: false
+    enabled: false
     name: mongo
     port: 27017
     PullSecrets: []
@@ -38,7 +38,7 @@ essentials:
     public_key_full_path: ""
   
   minio:
-    enabled: false
+    enabled: true
     name: minio
     port: 9000
     UIPort: 9001
