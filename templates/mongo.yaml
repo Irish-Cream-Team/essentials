@@ -25,14 +25,6 @@ spec:
         - name: {{ .Values.essentials.mongo.name | default "mongo"}}
           {{- if $replicaset }}
           image: "harborreg-2.northeurope.cloudapp.azure.com/library/mongo:replicaSet"
-          # command: ["/bin/sh" , "/test/test-mongo.sh"]
-          volumeMounts:
-            - name: test-mongo
-              mountPath: "/test"
-          lifecycle:
-            postStart:
-              exec:
-                command: ["/test/test-mongo.sh"]
           {{- else }}
           image: {{ .Values.essentials.mongo.image | default "mongo"}}
           {{- end }}
@@ -58,26 +50,65 @@ spec:
       port: {{ .Values.essentials.mongo.port | default 27017 }}
       targetPort: {{ .Values.essentials.mongo.port | default 27017}}
 ---
+{{- if $replicaset }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: test-mongo
+  name: init-mongo-replicaset
 data:
-  test-mongo.sh: |
-    #!/bin/sh
-    
-    # while [ "$(grep -v "rem_address" /proc/net/tcp | grep 6989)" = "" ];
-    # do
-    #   echo "wating for monog to listen on port 27017"
-    # done;
-    sleep 3
-    # curl 127.0.0.1:27017 2&>1;
+  init-mongo-replicaset.sh: |
+    #!/bin/sh    
+    ATTEMPTS=0 ; LIMIT=59 ;
+
     mongo --host localhost --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host:"localhost:27017"}]})';
-    touch test-see-if-works;
-    sleep 3
-    mongo --port 27017 --host localhost --eval 'cfg =rs.conf(); cfg.members[0].host = "mongo:27017"; rs.reconfig(cfg);';
-#     mongod --port 37017 --replSet rs0 --bind_ip localhost
-#     db.adminCommand( { createRole: "systemreplsetRole",privileges: [{ resource: { db: "local", collection: "system.replset" }, actions: ["find","update"] }],roles: []} );
-# db.createUser( { user: "myUserAdmins", pwd: "mimi1990", roles: [ { role: "userAdminAnyDatabase", db: "admin" }]  })
-   
+  
+    STATUS=$?
+    
+    echo  $STATUS
+    
+    until [ $STATUS = 0 ]
+    do
+      ATTEMPTS=`expr $ATTEMPTS + 1` ;
+      echo \"Failed attempts: $ATTEMPTS\" ;
+      if [ $ATTEMPTS -gt $LIMIT ]; then
+        exit 1 ;
+      fi ;
+      sleep 2 ; # 1 second intervals between attempts
+      
+      mongo --host mongo --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host:"mongo:27017"}]})';
+
+      STATUS=$? ;
+    
+    done ;
+    set -e ; # reset `e` as active
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "mongo-init"
+  labels:
+    {{- include "master-chart.labels" . | nindent 4 }}
+    app: {{ default "mongo-init"}}
+spec:
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        app: {{ default "mongo-init"}}
+    spec:
+      containers:
+        - name: "mongo-init"
+          image: "harborreg-2.northeurope.cloudapp.azure.com/library/mongo:replicaSet"
+          command: ["/bin/sh" , "/init/init-mongo-replicaset.sh"]
+          volumeMounts:
+            - name: init-mongo-replicaset
+              mountPath: "/init"
+      volumes:
+        - name: init-mongo-replicaset
+          configMap:
+            name: init-mongo-replicaset
+            defaultMode: 0745
+      restartPolicy: OnFailure
+{{- end }}
 {{- end -}}
