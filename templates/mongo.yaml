@@ -24,7 +24,7 @@ spec:
       containers:
         - name: {{ .Values.essentials.mongo.name | default "mongo"}}
           {{- if $replicaset }}
-          image: "harborreg-2.northeurope.cloudapp.azure.com/library/mongo:replicaSet"
+          image: {{ .Values.essentials.mongo.image | default "harborreg-2.northeurope.cloudapp.azure.com/library/mongo:replicaSet" }}
           {{- else }}
           image: {{ .Values.essentials.mongo.image | default "mongo"}}
           {{- end }}
@@ -99,7 +99,7 @@ spec:
     spec:
       containers:
         - name: "mongo-init"
-          image: "harborreg-2.northeurope.cloudapp.azure.com/library/mongo:replicaSet"
+          image: {{ .Values.essentials.mongo.image | default "harborreg-2.northeurope.cloudapp.azure.com/library/mongo:replicaSet"}}
           command: ["/bin/sh" , "/init/init-mongo-replicaset.sh"]
           volumeMounts:
             - name: init-mongo-replicaset

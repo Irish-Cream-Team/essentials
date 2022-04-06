@@ -16,9 +16,13 @@ spec:
       labels:
         app: {{ .Values.essentials.minio.name | default "minio" }}
     spec:
+      imagePullSecrets:
+      {{- range .Values.essentials.minio.PullSecrets }}
+        - name: {{ . }}
+      {{- end }}
       containers:
         - name: {{ .Values.essentials.minio.name | default "minio" }}
-          image: "quay.io/minio/minio:latest"
+          image: {{ .Values.essentials.minio.image | default "quay.io/minio/minio:latest" }}
           command:
             - "/bin/sh"
             - "-ce"
