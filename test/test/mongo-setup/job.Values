@@ -1,13 +1,16 @@
+
 {{- $replicaset := default false .Values.essentials.mongo.replicaset -}}
 {{- if .Values.essentials.mongo.enabled -}}
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: {{ .Values.essentials.mongo.name | default "mongo" }}
   labels:
     {{- include "master-chart.labels" . | nindent 4 }}
 spec:
+  template:
+    spec:
       imagePullSecrets:
       {{- range .Values.essentials.mongo.PullSecrets }}
         - name: {{ . }}
@@ -21,14 +24,15 @@ spec:
             name: {{ .Values.essentials.mongo.name | default "mongo"}}
           
       - name: "mongo-setup"
-        image: {{ .Values.essentials.mongo.image | default "harborreg-2.northeurope.cloudapp.azure.com/library/mongo-setup:0.0.3" }}
+        image: {{ .Values.essentials.mongo.image | default "harborreg-2.northeurope.cloudapp.azure.com/library/mongo-setup:1" }}
         command: ["bash", "-c", "/config/wait-for-it.sh {{ .Values.essentials.mongo.name | default "mongo"}}:27017 -- /config/mongo-setup.sh"]
         env:
         - name: HOST_NAME
           value: {{ .Values.essentials.mongo.name | default "mongo"}}
         - name: RPL_NAME
           value: {{ .Values.essentials.mongo.replica_name | default "rs2"}}
-      restartPolicy: OnFailure      
+      restartPolicy: OnFailure
+  backoffLimit: 4      
 ---
 apiVersion: v1
 kind: Service
@@ -44,5 +48,3 @@ spec:
       targetPort: {{ .Values.essentials.mongo.port | default 27017}}
 ---
 {{- end -}}
-
-
