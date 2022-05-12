@@ -13,6 +13,7 @@ spec:
         - name: {{ . }}
       {{- end }}
       containers:
+      {{- if $replicaset }}
       - name: {{ .Values.essentials.mongo.name | default "mongo"}}
         image: {{ .Values.essentials.mongo.image | default "mongo:4" }}
         command: [ "/usr/bin/mongod", "--replSet", "{{ .Values.essentials.mongo.replica_name | default "rs2"}}" , "--bind_ip_all", "--wiredTigerCacheSizeGB", "1" ]
@@ -28,6 +29,10 @@ spec:
           value: {{ .Values.essentials.mongo.name | default "mongo"}}
         - name: RPL_NAME
           value: {{ .Values.essentials.mongo.replica_name | default "rs2"}}
+        {{- else }}
+        - name: {{ .Values.essentials.mongo.name | default "mongo"}}
+          image: {{ .Values.essentials.mongo.image | default "mongo"}}
+        {{- end }}
       restartPolicy: OnFailure      
 ---
 apiVersion: v1
@@ -44,5 +49,3 @@ spec:
       targetPort: {{ .Values.essentials.mongo.port | default 27017}}
 ---
 {{- end -}}
-
-
