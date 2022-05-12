@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:4
+    restart: always
+    container_name: mongo
+    # volumes:
+    # - mongodata:/data/db
+    expose:
+    - "27017"
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rs2", "--bind_ip_all", "--wiredTigerCacheSizeGB", "1"]
+
+  mongosetup:
+    image: "harborreg-2.northeurope.cloudapp.azure.com/library/mongo-setup:0.0.1"
+    # build: "./mongo-setup"
+    environment:
+      - RPL_NAME=rs2
+      - HOST_NAME=mongo2
+    entrypoint: ["bash", "-c", "/config/wait-for-it.sh mongo:27017 -- /config/mongo-setup.sh"]
+    container_name: "mongosetup"
+    depends_on:
+    - mongo
+    # volumes:
+    # - mongostatus:/data/
+        
+# volumes:
+#   mongodata:
+#   mongostatus:
